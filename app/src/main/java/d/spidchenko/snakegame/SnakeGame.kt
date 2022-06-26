@@ -16,39 +16,39 @@ import java.io.IOException
 
 class SnakeGame(context: Context) : SurfaceView(context), Runnable {
 
-    private lateinit var mGameThread: Thread
-    private var mNextFrameTime = 0L
-    private var mPlaying = false
-    private var mPaused = true
-    private var mSceneInitialized = false
-    private var mScreenX: Int = 0
-    private var mScreenY: Int = 0
-    private var mBlockSize = 0
+    private lateinit var gameThread: Thread
+    private var nextFrameTime = 0L
+    private var isPlaying = false
+    private var isPaused = true
+    private var isSceneInitialized = false
+    private var screenX: Int = 0
+    private var screenY: Int = 0
+    private var blockSize = 0
 
-    private val mSurfaceHolder: SurfaceHolder = holder
-    private lateinit var mCanvas: Canvas
-    private val mPaint: Paint = Paint()
+    private val surfaceHolder: SurfaceHolder = holder
+    private lateinit var canvas: Canvas
+    private val paint: Paint = Paint()
 
-    private lateinit var mSoundPool: SoundPool
-    private var mEatId: Int = 0
-    private var mCrashId: Int = 0
+    private lateinit var soundPool: SoundPool
+    private var eatId: Int = 0
+    private var crashId: Int = 0
 
-    private var mNumBlocksHigh = 0
-    private var mScore = 0
-    private lateinit var mSnake: Snake
-    private lateinit var mApple: Apple
+    private var numBlocksHigh = 0
+    private var score = 0
+    private lateinit var snake: Snake
+    private lateinit var apple: Apple
 
     fun resume() {
         Log.d(TAG, "resume")
-        mPlaying = true
+        isPlaying = true
         // TODO Need to use Kotlin coroutines instead of Threads
-        mGameThread = Thread(this)
-        mGameThread.start()
+        gameThread = Thread(this)
+        gameThread.start()
     }
 
     override fun run() {
-        while (mPlaying) {
-            if (!mPaused) {
+        while (isPlaying) {
+            if (!isPaused) {
                 // Update 10 times a second
                 if (updateRequired()) {
                     update()
@@ -60,8 +60,8 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
 
     fun pause() {
         Log.d(TAG, "pause")
-        mPlaying = false
-        mGameThread.join()
+        isPlaying = false
+        gameThread.join()
     }
 
     private fun update() {
@@ -72,8 +72,8 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
 
     private fun updateRequired(): Boolean {
         // TODO I think coroutine will be great here
-        if (mNextFrameTime <= System.currentTimeMillis()) {
-            mNextFrameTime = System.currentTimeMillis() + MILLS_PER_SECOND / TARGET_FPS
+        if (nextFrameTime <= System.currentTimeMillis()) {
+            nextFrameTime = System.currentTimeMillis() + MILLS_PER_SECOND / TARGET_FPS
             return true
         }
         return false
@@ -81,35 +81,35 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
 
     private fun draw() {
         if (holder.surface.isValid) {
-            if (!mSceneInitialized) {
+            if (!isSceneInitialized) {
                 initialize2D()
                 initializeAudio()
-                mSceneInitialized = true
+                isSceneInitialized = true
             }
-            mCanvas = mSurfaceHolder.lockCanvas()
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182))
-            mPaint.color = Color.WHITE
-            mPaint.textSize = 120F
+            canvas = surfaceHolder.lockCanvas()
+            canvas.drawColor(Color.argb(255, 26, 128, 182))
+            paint.color = Color.WHITE
+            paint.textSize = 120F
 
-            mCanvas.drawText("" + mScore, 20F, 120F, mPaint);
-            mApple.draw(mCanvas, mPaint)
+            canvas.drawText("" + score, 20F, 120F, paint)
+            apple.draw(canvas, paint)
 
-            if (mPaused) {
-                mPaint.color = Color.WHITE
-                mPaint.textSize = 250F
-                mCanvas.drawText(resources.getString(R.string.tap_to_play), 200F, 700F, mPaint)
+            if (isPaused) {
+                paint.color = Color.WHITE
+                paint.textSize = 250F
+                canvas.drawText(resources.getString(R.string.tap_to_play), 200F, 700F, paint)
             }
-            mSurfaceHolder.unlockCanvasAndPost(mCanvas)
+            surfaceHolder.unlockCanvasAndPost(canvas)
         }
     }
 
     private fun initialize2D() {
-        mScreenX = mSurfaceHolder.surfaceFrame.width()
-        mScreenY = mSurfaceHolder.surfaceFrame.height()
-        mBlockSize = mScreenX / NUM_BLOCKS_WIDE
-        mNumBlocksHigh = mScreenY / mBlockSize
+        screenX = surfaceHolder.surfaceFrame.width()
+        screenY = surfaceHolder.surfaceFrame.height()
+        blockSize = screenX / NUM_BLOCKS_WIDE
+        numBlocksHigh = screenY / blockSize
 
-        mApple = Apple(context, Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), mBlockSize)
+        apple = Apple(context, Point(NUM_BLOCKS_WIDE, numBlocksHigh), blockSize)
     }
 
     private fun initializeAudio() {
@@ -118,7 +118,7 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
 
-        mSoundPool = SoundPool.Builder()
+        soundPool = SoundPool.Builder()
             .setMaxStreams(5)
             .setAudioAttributes(audioAttributes)
             .build()
@@ -126,9 +126,9 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
         try {
             val assetsManager = context.assets
             var fileDescriptor = assetsManager.openFd("get_apple.ogg")
-            mEatId = mSoundPool.load(fileDescriptor, 0)
+            eatId = soundPool.load(fileDescriptor, 0)
             fileDescriptor = assetsManager.openFd("snake_death.ogg")
-            mCrashId = mSoundPool.load(fileDescriptor, 0)
+            crashId = soundPool.load(fileDescriptor, 0)
 
         } catch (e: IOException) {
             Log.d(TAG, "initializeAudio: Error: $e")
@@ -138,12 +138,12 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
     private fun startNewGame() {
         // reset the snake
 
-        mApple.spawn()
+        apple.spawn()
 
         // Reset the mScore
-        mScore = 0;
+        score = 0
         // Setup mNextFrameTime so an update can triggered
-        mNextFrameTime = System.currentTimeMillis();
+        nextFrameTime = System.currentTimeMillis()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -156,8 +156,8 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    if (mPaused) {
-                        mPaused = false
+                    if (isPaused) {
+                        isPaused = false
                         startNewGame()
                     }
                 }

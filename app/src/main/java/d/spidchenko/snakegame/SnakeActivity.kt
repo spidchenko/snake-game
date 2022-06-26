@@ -7,24 +7,24 @@ import android.widget.LinearLayout
 
 class SnakeActivity : Activity() {
 
-    private lateinit var mSnakeGame: SnakeGame
+    private lateinit var snakeGame: SnakeGame
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.activity_main)
-        mSnakeGame = SnakeGame(this)
+        snakeGame = SnakeGame(this)
         val gameLayout: LinearLayout = findViewById(R.id.gameLayout)
-        gameLayout.addView(mSnakeGame)
+        gameLayout.addView(snakeGame)
     }
 
     override fun onResume() {
         super.onResume()
-        mSnakeGame.resume()
+        snakeGame.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        mSnakeGame.pause()
+        snakeGame.pause()
     }
 }

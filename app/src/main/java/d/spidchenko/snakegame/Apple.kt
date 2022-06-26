@@ -6,30 +6,30 @@ import kotlin.random.Random
 import kotlin.random.nextInt
 
 class Apple(
-    private val mContext: Context,
-    private val mSpawnRange: Point,
-    private val mSize: Int
+    context: Context,
+    private val spawnRange: Point,
+    private val size: Int
 ) {
-    private var mLocationOnGrid = Point(-10, 0)
-    private val mBitmap: Bitmap
+    private var locationOnGrid = Point(-10, 0)
+    private val bitmap: Bitmap
 
     init {
-        val bitmap = BitmapFactory.decodeResource(mContext.resources, R.drawable.apple)
-        mBitmap = Bitmap.createScaledBitmap(bitmap, mSize, mSize, true) //bitmap.scale(mSize, mSize)
+        val originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.apple)
+        bitmap = Bitmap.createScaledBitmap(originalBitmap, size, size, true)
     }
 
     fun spawn() {
-        mLocationOnGrid.x = Random.nextInt(1..mSpawnRange.x)
-        mLocationOnGrid.y = Random.nextInt(0 until mSpawnRange.y)
+        locationOnGrid.x = Random.nextInt(1..spawnRange.x)
+        locationOnGrid.y = Random.nextInt(0 until spawnRange.y)
     }
 
-    fun getLocation() = mLocationOnGrid
+    fun getLocation() = locationOnGrid
 
     fun draw(canvas: Canvas, paint: Paint) {
         canvas.drawBitmap(
-            mBitmap,
-            mLocationOnGrid.x * mSize.toFloat(),
-            mLocationOnGrid.y * mSize.toFloat(),
+            bitmap,
+            locationOnGrid.x * size.toFloat(),
+            locationOnGrid.y * size.toFloat(),
             paint
         )
     }
