@@ -36,12 +36,12 @@ class Snake(
 
         matrix.preRotate(-90F)
 
-        bitmapHeadUp =
+        bitmapHeadDown =
             Bitmap.createBitmap(bitmapHeadRight, 0, 0, segmentSize, segmentSize, matrix, true)
 
         matrix.preRotate(180F)
 
-        bitmapHeadDown =
+        bitmapHeadUp =
             Bitmap.createBitmap(bitmapHeadRight, 0, 0, segmentSize, segmentSize, matrix, true)
 
         bitmapBody = Bitmap.createScaledBitmap(originalBodyBitmap, segmentSize, segmentSize, true)
