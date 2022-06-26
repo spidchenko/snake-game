@@ -65,9 +65,18 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
     }
 
     private fun update() {
-        // Move the snake
-        // Did the head of the snake eat the apple?
-        // Did the snake die?
+        snake.move()
+
+        if (snake.checkDinner(apple.getLocation())) {
+            apple.spawn()
+            score++
+            soundPool.play(eatId, 1F, 1F, 0, 0, 1F)
+        }
+
+        if (snake.detectDeath()) {
+            soundPool.play(crashId, 1F, 1F, 0, 0, 1F)
+            isPaused = true
+        }
     }
 
     private fun updateRequired(): Boolean {
@@ -93,6 +102,7 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
 
             canvas.drawText("" + score, 20F, 120F, paint)
             apple.draw(canvas, paint)
+            snake.draw(canvas, paint)
 
             if (isPaused) {
                 paint.color = Color.WHITE
@@ -110,6 +120,7 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
         numBlocksHigh = screenY / blockSize
 
         apple = Apple(context, Point(NUM_BLOCKS_WIDE, numBlocksHigh), blockSize)
+        snake = Snake(context, Point(NUM_BLOCKS_WIDE, numBlocksHigh), blockSize)
     }
 
     private fun initializeAudio() {
@@ -136,13 +147,9 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
     }
 
     private fun startNewGame() {
-        // reset the snake
-
+        snake.reset(NUM_BLOCKS_WIDE, numBlocksHigh)
         apple.spawn()
-
-        // Reset the mScore
         score = 0
-        // Setup mNextFrameTime so an update can triggered
         nextFrameTime = System.currentTimeMillis()
     }
 
@@ -151,15 +158,12 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
         if (event != null) {
             when (event.action.and(MotionEvent.ACTION_MASK)) {
 
-                MotionEvent.ACTION_DOWN -> {
-
-                }
-
                 MotionEvent.ACTION_UP -> {
                     if (isPaused) {
                         isPaused = false
                         startNewGame()
                     }
+                    snake.switchHeading(event)
                 }
             }
         }
