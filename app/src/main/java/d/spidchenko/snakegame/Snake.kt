@@ -119,23 +119,24 @@ class Snake(
         }
     }
 
-    fun switchHeading(motionEvent: MotionEvent) {
-        heading = if (motionEvent.x > halfWayPoint) {
-            // Rotate right
-            when (heading) {
-                Heading.UP -> Heading.RIGHT
-                Heading.RIGHT -> Heading.DOWN
-                Heading.DOWN -> Heading.LEFT
-                Heading.LEFT -> Heading.UP
-            }
-        } else {
-            // Rotate left
-            when (heading) {
-                Heading.UP -> Heading.LEFT
-                Heading.LEFT -> Heading.DOWN
-                Heading.DOWN -> Heading.RIGHT
-                Heading.RIGHT -> Heading.UP
-            }
+    fun switchHeading(motionEvent: MotionEvent) =
+        if (motionEvent.x > halfWayPoint) rotateRight() else rotateLeft()
+
+    private fun rotateRight() {
+        heading = when (heading) {
+            Heading.UP -> Heading.RIGHT
+            Heading.RIGHT -> Heading.DOWN
+            Heading.DOWN -> Heading.LEFT
+            Heading.LEFT -> Heading.UP
+        }
+    }
+
+    private fun rotateLeft() {
+        heading = when (heading) {
+            Heading.UP -> Heading.LEFT
+            Heading.LEFT -> Heading.DOWN
+            Heading.DOWN -> Heading.RIGHT
+            Heading.RIGHT -> Heading.UP
         }
     }
 }
