@@ -56,7 +56,7 @@ class Snake(
     }
 
     fun move() {
-        for (i in segmentLocations.lastIndex until 0) {
+        for (i in segmentLocations.lastIndex downTo 1) {
             segmentLocations[i].x = segmentLocations[i - 1].x
             segmentLocations[i].y = segmentLocations[i - 1].y
         }
