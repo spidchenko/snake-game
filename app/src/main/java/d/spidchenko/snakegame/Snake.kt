@@ -49,10 +49,10 @@ class Snake(
         halfWayPoint = moveRange.x * segmentSize / 2
     }
 
-    fun reset(width: Int, height: Int) {
+    fun reset() {
         heading = Heading.RIGHT
         segmentLocations.clear()
-        segmentLocations.add(Point(width / 2, height / 2))
+        segmentLocations.add(Point(moveRange.x / 2, moveRange.y / 2))
     }
 
     fun move() {

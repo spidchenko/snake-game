@@ -147,7 +147,7 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
     }
 
     private fun startNewGame() {
-        snake.reset(NUM_BLOCKS_WIDE, numBlocksHigh)
+        snake.reset()
         apple.spawn()
         score = 0
         nextFrameTime = System.currentTimeMillis()
