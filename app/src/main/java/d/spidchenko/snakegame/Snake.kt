@@ -103,12 +103,13 @@ class Snake(
             val head = segmentLocations[0]
             val headLeft = head.x * segmentSize.toFloat()
             val headTop = head.y * segmentSize.toFloat()
-            when (heading) {
-                Heading.RIGHT -> canvas.drawBitmap(bitmapHeadRight, headLeft, headTop, paint)
-                Heading.LEFT -> canvas.drawBitmap(bitmapHeadLeft, headLeft, headTop, paint)
-                Heading.UP -> canvas.drawBitmap(bitmapHeadUp, headLeft, headTop, paint)
-                Heading.DOWN -> canvas.drawBitmap(bitmapHeadDown, headLeft, headTop, paint)
+            val bitmapToDraw = when (heading) {
+                Heading.RIGHT -> bitmapHeadRight
+                Heading.LEFT -> bitmapHeadLeft
+                Heading.UP -> bitmapHeadUp
+                Heading.DOWN -> bitmapHeadDown
             }
+            canvas.drawBitmap(bitmapToDraw, headLeft, headTop, paint)
 
             for (i in 1..segmentLocations.lastIndex) {
                 val segmentLeft = segmentLocations[i].x * segmentSize.toFloat()
