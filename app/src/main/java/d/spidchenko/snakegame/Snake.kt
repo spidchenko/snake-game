@@ -81,7 +81,7 @@ class Snake(
             isDead = true
         }
 
-        for (i in segmentLocations.lastIndex until 0) {
+        for (i in segmentLocations.lastIndex downTo 1) {
             if (head.x == segmentLocations[i].x && head.y == segmentLocations[i].y) {
                 isDead = true
             }
