@@ -172,8 +172,8 @@ class SnakeGame(context: Context) : SurfaceView(context), Runnable {
 
     companion object {
         private const val TAG = "SnakeGame.LOG_TAG"
-        const val NUM_BLOCKS_WIDE = 10
-        const val TARGET_FPS = 10
+        const val NUM_BLOCKS_WIDE = 40
+        const val TARGET_FPS = 7
         const val MILLS_PER_SECOND = 1000L
     }
 }
